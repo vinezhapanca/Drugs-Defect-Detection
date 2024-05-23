@@ -86,7 +86,9 @@ Imgsz : 320 x 320 px (standardizing the input image size for consistent processi
 Fliplr : Flips the image left to right with 50% probability (so that the model doesn’t simply remember the writing on the pills)
 
 Example of train data:
+
 ![image](https://github.com/vinezhapanca/Drugs-Defect-Detection/assets/24844195/34a4e831-2752-4135-86ea-18d89f5f62e2)
+
 
 Example of prediction on validation data : 
 
