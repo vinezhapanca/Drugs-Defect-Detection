@@ -1,0 +1,9 @@
+# Train/val/test sets as 
+
+train: ./images/train  
+val: ./images/val 
+test: ./images/test  
+
+# Classes
+nc: 6  # number of classes
+names: ['Capsule_Defect','Capsule_Normal', 'Softgel_Defect', 'Softgel_Normal', 'Tablet_Defect', 'Tablet_Normal']  # class names
