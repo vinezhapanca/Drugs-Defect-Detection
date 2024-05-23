@@ -71,18 +71,40 @@ There is actually a limitation in terms of how many data can be uploaded from lo
 Something I learned here :
 If possible, although the data might be in different folder, please name each file differently. There is an option save the annotation as YOLO format, however in my case the data was truncated, which I suspect due to my file naming issue. Nevertheless, I also needed some customization (related to what I said earlier about dividing data into train, val, and test), so I decided to save the annotation to COCO format and convert it to YOLO format. 
 The basic code was from [here](https://github.com/ultralytics/JSON2YOLO) , and the final code can be seen at "COCO JSON to YOLO.ipynb"
-
+After converting the annotation, we also need to create a yaml file, consisting of train, val, and test location, as well as the labels.
 
 ## 6. Finetune YOLOv8 Nano
 
+Installation of YOLOv8 can be seen [here](https://github.com/ultralytics/ultralytics)
+We load the yolov8n.pt (the smallest and fastest one), then train our data (using the yaml file).
+The [default](https://docs.ultralytics.com/usage/cfg/) configuration fits this project's needs, so I decided to just use the standard.
+
+Some highlights :
+Mosaic : Combining multiple images to 1 image (enabling multi object detection)
+Scale : 50% smaller (enabling the model to learn from even smaller images)
+Imgsz : 320 x 320 px (standardizing the input image size for consistent processing)
+Fliplr : Flips the image left to right with 50% probability (so that the model doesn’t simply remember the writing on the pills)
+
+Example of train data:
+![image](https://github.com/vinezhapanca/Drugs-Defect-Detection/assets/24844195/34a4e831-2752-4135-86ea-18d89f5f62e2)
+
+Example of prediction on validation data : 
+
+![val_batch1_pred](https://github.com/vinezhapanca/Drugs-Defect-Detection/assets/24844195/4726fa16-b54b-4b49-bff6-a29deac39e2c)
+
+The overall recall value is 0.86 which is quite good, but still can be improved.
 
 
 ## 7. Hyperparameter tuning YOLOv8 model
 
 I used [Ray Tune](https://docs.ray.io/en/latest/tune/index.html) to help with hyperparameter tuning.
 Some hyperparameter that I tuned are batch_size, imgsz (image size), and lrf (learning rate final). I also implemented early stopping mechanism. 
-Due to time and resource constraint, I only did 25 iteration for 30 epoch, and taking 3 samples (I used Bayesian Optimization Search Algorithm).
-However, the result is quite promising, increasing overall Recall value to .......
+Due to time and resource constraint, I only did 25 iteration for 30 epoch, and taking 3 samples, and used Bayesian Optimization Search Algorithm.
+However, the result is quite promising, increasing overall Recall value to 0.95.
 
 
 ## 8. Challenge : Generalization
+
+Based on the experiment, we can conclude that this model has performed good and there is no indication of overfitting. However, we need to remember that the data is mainly consist of similar drugs but different surface condition, also only consist of one object per image. Therefore it is also interesting to assess whether this model can generalize to multi-object detection and to detect drug from different brand not used in training. It will help us to determine how much effort we will need to leverage this model's capability. 
+
+
